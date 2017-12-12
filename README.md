@@ -2,7 +2,7 @@
 
 一个用于在swoole上运行yii2项目的composer包，类似的其实是有的，自己写了一个简单版的。
 
-##如何启动
+## 如何启动
 
 1. 配置console设置（config/console.php），在component中添加组件
 ```php
@@ -11,7 +11,7 @@
     ]
 ```
 
-2.添加console启动控制器
+2. 添加console启动控制器
 ```php
 
 namespace app\commands;
