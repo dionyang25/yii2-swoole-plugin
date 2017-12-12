@@ -7,7 +7,7 @@
  */
 namespace app\components\yii2Swoole\src;
 use yii\base\Component;
-
+use swoole_http_server;
 class Server extends Component {
     public $host = "127.0.0.1";
     public $port = "9778";
@@ -21,15 +21,18 @@ class Server extends Component {
         'reactor_num'=>4,
         'worker_num'=>20,
         'max_request' => 100,
+        'pid_file'=> __DIR__ . '/../../../runtime/server.pid'
 
     ];
     public function init()
     {
-        $this->server = new \swoole_http_server($this->host,$this->port,$this->mode,$this->socket_type);
-        //设置配置
-        $this->config = array_merge($this->custom_config,$this->config);
-        $this->server->set($this->config);
-        $this->server->on('request',[$this, 'Request']);
+        if(!$this->getPid()){
+            $this->server = new swoole_http_server($this->host,$this->port,$this->mode,$this->socket_type);
+            //设置配置
+            $this->config = array_merge($this->custom_config,$this->config);
+            $this->server->set($this->config);
+            $this->server->on('request',[$this, 'Request']);
+        }
         parent::init();
     }
 
@@ -85,5 +88,29 @@ class Server extends Component {
     public function appRun(){
         require $this->entrance_file;
         $this->run();
+    }
+
+    public function appStop(){
+        if($this->getPid()){
+            $pid = file_get_contents($this->custom_config['pid_file']);
+            if (posix_getpgid($pid)) {
+                return posix_kill($pid,SIGTERM);
+            }else{
+                unlink($this->custom_config['pid_file']);
+            }
+        }else{
+            return false;
+        }
+    }
+
+    public function getPid(){
+        if(file_exists($this->custom_config['pid_file'])){
+            $pid = file_get_contents($this->custom_config['pid_file']);
+            if (posix_getpgid($pid)) {
+                return $pid;
+            }
+        }else{
+            return false;
+        }
     }
 }
