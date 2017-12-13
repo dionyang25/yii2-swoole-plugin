@@ -11,18 +11,27 @@
     ]
 ```
 
-2. 添加console启动控制器
+2. 准备入口文件，该入口文件主要是设置YII的启动参数，最终返回一个合并的启动数组配置即可
+```php
+defined('YII_DEBUG') or define('YII_DEBUG',true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
+require(__DIR__ . '/../vendor/autoload.php');
+$config = \yii\helpers\ArrayHelper::merge(
+    require(__DIR__ . '/../config/web.php') ,
+    require(__DIR__ . '/../config/web-local.php')
+);
+
+return $config;
+```
+
+3. 添加console启动控制器
 ```php
 
 namespace app\commands;
 use yii\console\Controller;
 use Yii;
 /**
- * This command echoes the first argument that you have entered.
- *
- * This command is provided as an example for you to learn how to create console commands.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author DionYang
  * @since 2.0
  */
 class HelloController extends Controller
@@ -34,14 +43,22 @@ class HelloController extends Controller
     public function actionIndex()
     {
         $server =Yii::$app->yii2Swoole;
-        $server->entrance_file = __DIR__.'/../php-backstreet-api/index.php';
+        $server->entrance_file = __DIR__.'/../php-backstreet-api/index-test.php';
         $server->run();
     }
 
     public function actionStop()
     {
+        $this->stdout('Already Stop'.PHP_EOL);
         Yii::$app->yii2Swoole->appStop();
     }
 }
 
+```
+
+4. 控制台使用如下命令启动
+
+```php
+./yii hello //启动
+./yii hello/stop //终止
 ```
