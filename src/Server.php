@@ -8,6 +8,9 @@
 namespace app\components\yii2Swoole\src;
 use yii\base\Component;
 use swoole_http_server;
+use Yii;
+use yii\web\Application;
+
 class Server extends Component {
     public $host = "127.0.0.1";
     public $port = "9778";
@@ -17,7 +20,7 @@ class Server extends Component {
     public $entrance_file;//项目入口文件
     private $server;
     private $custom_config = [
-        'daemonize'=>1,
+        'daemonize'=>0,
         'reactor_num'=>4,
         'worker_num'=>20,
         'max_request' => 100,
@@ -42,8 +45,7 @@ class Server extends Component {
 
     public function Request($request,$response){
         $this->dealRequest($request);
-
-       $this->appRun();
+        $this->appRun($request,$response);
     }
 
     /**
@@ -85,9 +87,14 @@ class Server extends Component {
      * @param $request
      * @param $response
      */
-    public function appRun(){
-        require $this->entrance_file;
-        $this->run();
+    public function appRun($request,$response){
+        $config = require($this->entrance_file);
+        $config['components']['response'] = [
+            'class'=>Response::className(),
+            'responseBySwoole'=>$response
+        ];
+        //启动app
+        (new Application($config))->run();
     }
 
     public function appStop(){
