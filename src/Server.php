@@ -71,8 +71,18 @@ class Server extends Component {
                 }
             }
         }
+        if(isset($request->header['request_uri'])){
+            $request->server['request_uri'] = $request->header['request_uri'];
+        }
+        if(isset($request->header['script_name'])){
+            $request->server['script_name'] = $request->header['script_name'];
+        }
+        if(isset($request->header['script_filename'])){
+            $request->server['script_filename'] = $request->header['script_filename'];
+        }
         $server = isset($request->server) ? $request->server : [];
         $header = isset($request->header) ? $request->header : [];
+
         foreach ($server as $key => $value) {
             $_SERVER[strtoupper($key)] = $value;
             unset($server[$key]);
@@ -89,6 +99,10 @@ class Server extends Component {
      */
     public function appRun($request,$response){
         $config = require($this->entrance_file);
+        //装载自定义request response类
+        $config['components']['request'] = [
+            'class'=>Request::className(),
+        ];
         $config['components']['response'] = [
             'class'=>Response::className(),
             'responseBySwoole'=>$response

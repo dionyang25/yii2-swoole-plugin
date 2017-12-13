@@ -11,11 +11,25 @@
     ]
 ```
 
-2. 准备入口文件，该入口文件主要是设置YII的启动参数，最终返回一个合并的启动数组配置即可
+这里可以加入对swoole的配置，支持的配置如下（下图为默认配置）
+
+```php
+    'yii2Swoole'=>[
+        'class'=>'app\components\yii2Swoole\src\Server',
+        'config'=>[
+              'daemonize'=>0,
+              'reactor_num'=>4,
+              'worker_num'=>20,
+              'max_request' => 100,
+              'pid_file'=> __DIR__ . '/../../../runtime/server.pid'
+        ]
+    ]
+```
+
+2. 准备入口文件，该入口文件主要是设置你的YII应用服务器的启动参数，最终返回一个合并的启动数组配置即可
 ```php
 defined('YII_DEBUG') or define('YII_DEBUG',true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
-require(__DIR__ . '/../vendor/autoload.php');
 $config = \yii\helpers\ArrayHelper::merge(
     require(__DIR__ . '/../config/web.php') ,
     require(__DIR__ . '/../config/web-local.php')
@@ -53,10 +67,36 @@ class HelloController extends Controller
         Yii::$app->yii2Swoole->appStop();
     }
 }
-
 ```
 
-4. 控制台使用如下命令启动
+4. 需要修改nginx配置如下，注意，如果在yii2中启用pathinfo模式，那么三个额外的header必须要添加，否则无法正确匹配路由。
+示例如下：
+
+```nginx
+location ^~ /php-backstreet-api {
+    root /Users/admin/www/php-backstreet-api;
+  
+    location ~ \.(css|js|jpg|png|gif)$ {
+            root /Users/admin/www;
+    }
+    location ~ / {
+        try_files $uri $uri/ /php-backstreet-api/index.php$is_args$args;
+        #fastcgi_pass   127.0.0.1:9003;
+        #fastcgi_index  index.php;
+        #fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        #include        fastcgi_params;
+            proxy_set_header request_uri $request_uri;
+            proxy_set_header script_name $script_name;
+            proxy_set_header script_filename $document_root$fastcgi_script_name;
+            proxy_set_header Connection "keep-alive";
+            proxy_set_header X-REAL-IP $remote_addr;
+            proxy_pass http://127.0.0.1:9778;
+    }
+}
+```
+
+
+5. 控制台使用如下命令启动
 
 ```php
 ./yii hello //启动

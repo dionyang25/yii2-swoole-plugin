@@ -27,13 +27,13 @@ class Response extends \yii\web\Response {
                 if ($pos + $chunkSize > $end) {
                     $chunkSize = $end - $pos + 1;
                 }
-                echo fread($handle, $chunkSize);
+                $this->responseBySwoole->end(fread($handle, $chunkSize));
                 flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
             }
             fclose($handle);
         } else {
             while (!feof($this->stream)) {
-                echo fread($this->stream, $chunkSize);
+                $this->responseBySwoole->end(fread($this->stream, $chunkSize));
                 flush();
             }
             fclose($this->stream);
@@ -52,14 +52,15 @@ class Response extends \yii\web\Response {
         foreach ($headers as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
             // set replace for first occurrence of header but false afterwards to allow multiple
-            $replace = true;
+//            $replace = true;
             foreach ($values as $value) {
-                header("$name: $value", $replace);
-                $replace = false;
+                $this->responseBySwoole->header($name,$value);
+//                header("$name: $value", $replace);
+//                $replace = false;
             }
         }
         $statusCode = $this->getStatusCode();
-        header("HTTP/{$this->version} {$statusCode} {$this->statusText}");
+//        $this->responseBySwoole->header("HTTP/{$this->version} {$statusCode} {$this->statusText}");
         $this->sendCookies();
     }
 }
