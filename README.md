@@ -4,8 +4,9 @@
 
 ## composer包安装
 
-composer require dionyang25/yii2-swoole-plugin
-
+```php
+    composer require dionyang25/yii2-swoole-plugin
+```
 ## composer包地址
 
 https://packagist.org/packages/dionyang25/yii2-swoole-plugin
@@ -23,7 +24,7 @@ https://packagist.org/packages/dionyang25/yii2-swoole-plugin
 
 ```php
     'yii2Swoole'=>[
-        'class'=>'app\components\yii2Swoole\src\Server',
+        'class'=>'yii2Swoole\Server',
         'config'=>[
               'daemonize'=>0,
               'reactor_num'=>4,
