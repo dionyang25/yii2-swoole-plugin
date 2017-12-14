@@ -2,12 +2,20 @@
 
 一个用于在swoole上运行yii2项目的composer包，类似的其实是有的，自己写了一个简单版的。
 
+## composer包安装
+
+composer require dionyang25/yii2-swoole-plugin
+
+## composer包地址
+
+https://packagist.org/packages/dionyang25/yii2-swoole-plugin
+
 ## 如何启动
 
 1. 配置console设置（config/console.php），在component中添加组件
 ```php
     'yii2Swoole'=>[
-        'class'=>'app\components\yii2Swoole\src\Server'
+        'class'=>'yii2Swoole\Server'
     ]
 ```
 

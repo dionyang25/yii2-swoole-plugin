@@ -23,7 +23,7 @@ class Server extends Component {
         'reactor_num'=>4,
         'worker_num'=>20,
         'max_request' => 100,
-        'pid_file'=> __DIR__ . '/../../../runtime/server.pid'
+        'pid_file'=> '/usr/local/server.pid'
 
     ];
     public function init()
