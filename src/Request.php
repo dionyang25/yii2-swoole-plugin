@@ -5,7 +5,7 @@
  * Date: 2017/12/13
  * Time: 下午5:44
  */
-namespace app\components\yii2Swoole\src;
+namespace yii2Swoole;
 use yii\base\InvalidConfigException;
 class Request extends \yii\web\Request{
 

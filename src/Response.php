@@ -5,7 +5,7 @@
  * Date: 2017/12/13
  * Time: 上午11:20
  */
-namespace app\components\yii2Swoole\src;
+namespace yii2Swoole;
 class Response extends \yii\web\Response {
 
     public $responseBySwoole;

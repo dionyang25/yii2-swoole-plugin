@@ -5,10 +5,9 @@
  * Date: 2017/12/12
  * Time: 下午3:02
  */
-namespace app\components\yii2Swoole\src;
+namespace yii2Swoole;
 use yii\base\Component;
 use swoole_http_server;
-use Yii;
 use yii\web\Application;
 
 class Server extends Component {
