@@ -13,7 +13,7 @@ use yii\web\Application;
 class Server extends Component {
     public $host = "127.0.0.1";
     public $port = "9778";
-    public $mode = SWOOLE_PROCESS;
+    public $mode = SWOOLE_BASE;
     public $socket_type = SWOOLE_TCP;
     public $config = [];
     public $entrance_file;//项目入口文件

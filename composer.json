@@ -3,7 +3,6 @@
   "type": "library",
   "description": "yii2 swoole 测试demo",
   "keywords": ["yii2","swoole","yii2-swoole"],
-  "homepage": "http://blog.feehi.com",
   "license": "MIT",
   "authors": [
     {
